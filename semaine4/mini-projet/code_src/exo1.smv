@@ -1,0 +1,28 @@
+MODULE main
+VAR state : {E0, E1, E2, E3, E4, E5, E6, E7, E8};
+    p : boolean;
+    q : boolean;
+ASSIGN
+  init(state) := E0;
+  init(p) := FALSE;
+  init(q) := FALSE;
+  next(state) := case
+        state = E0 : {E2};
+        state = E1 : {E2, E4};
+        state = E2 : {E3};
+        state = E3 : {E5, E0, E1, E3};
+        state = E4 : {E3, E5, E6};
+        state = E5 : {E3};
+        state = E6 : {E7};
+        state = E7 : {E8};
+        state = E8 : {E8};
+          esac;
+  next(p) := (next(state) = E1) | (next(state) = E3) | (next(state) = E4) | (next(state) = E6) | (next(state) = E7);
+  next(q) := (next(state) = E2) | (next(state) = E5) | (next(state) = E8) ; 
+         
+
+SPEC AG (state = E1 -> (p = TRUE & q = FALSE));
+SPEC AG (state = E1 -> EX(p = TRUE));
+SPEC AG (state = E6 -> E[ p = TRUE U q = TRUE]);
+SPEC AG ((!(state = E0)) -> E [ p = TRUE U q = TRUE ] );
+SPEC AG ( (p = TRUE & EX(p = TRUE)) -> (state = E1 | state = E3 | state = E4 | state = E6)) ;

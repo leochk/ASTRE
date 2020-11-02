@@ -1,0 +1,31 @@
+MODULE main
+VAR state : {E0, E1, E2, E3, E4};
+	demP 	: boolean;
+	demQ 	: boolean;
+	critP   : boolean;
+	critQ   : boolean;
+	mutex	: boolean;
+ASSIGN
+  init(state) 	:= E0;
+  init(demP) 	:= FALSE;
+  init(demQ) 	:= FALSE;
+  init(critP) 	:= FALSE;
+  init(critQ) 	:= FALSE;
+  init(mutex) 	:= FALSE;
+  next(state) 	:= case
+		state = E0 : {E1, E2};
+		state = E1 : {E3};
+		state = E2 : {E4};
+		state = E3 : {E0};
+		state = E4 : {E0};
+		 esac;
+next(demP) 	:= (next(state) = E1) | (next(state) = E3);
+next(demQ) 	:= (next(state) = E2) | (next(state) = E4);
+next(critP)   	:= (next(state) = E3);
+next(critQ)   	:= (next(state) = E4);
+next(mutex) 	:= (next(state) = E1) | (next(state) = E2) | (next(state) = E3) | (next(state) = E4);
+	
+LCLSPEC AG (!(critP & critQ));
+SPEC AG ((demP -> AF critP) & (demQ -> AF critQ));
+SPEC AG ((demP -> EF critP) & (demQ -> EF critQ));
+SPEC AG (((demP & !demQ) -> A [(!critQ) U critP]) & ((demQ & !demP) -> A [(!critP) U critQ]));

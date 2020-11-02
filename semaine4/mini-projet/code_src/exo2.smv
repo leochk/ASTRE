@@ -1,0 +1,31 @@
+MODULE main
+VAR state : {E0, E1, E2, E3, E4, E5, E6, E7};
+	demP : boolean;
+	demQ : boolean;
+	critP   : boolean;
+	critQ   : boolean;
+ASSIGN
+  init(state) := E0;
+  init(demP) := FALSE;
+  init(demQ) := FALSE;
+  init(critP) := FALSE;
+  init(critQ) := FALSE;
+  next(state) := case
+		state = E0 : {E1, E2};
+		state = E1 : {E3, E4};
+		state = E2 : {E3, E5};
+		state = E3 : {E3};
+		state = E4 : {E0, E6};
+		state = E5 : {E0, E7};
+		state = E6 : {E2};
+		state = E7 : {E1};
+ 		 esac;
+next(demP) := (next(state) = E1) | (next(state) = E3) | (next(state) = E4) | (next(state) = E6) | (next(state) = E7);
+next(demQ) := (next(state) = E2) | (next(state) = E3) | (next(state) = E5) | (next(state) = E6) | (next(state) = E6);
+next(critP)   := (next(state) = E4) | (next(state) = E6);
+next(critQ)   := (next(state) = E5) | (next(state) = E7);
+	
+SPEC AG (!(critP & critQ));
+SPEC AG ((demP -> AF critP) & (demQ -> AF critQ));
+SPEC AG ((demP -> EF critP) & (demQ -> EF critQ));
+SPEC AG (((demP & !demQ) -> A [(!critQ) U critP]) & ((demQ & !demP) -> A [(!critP) U critQ]));

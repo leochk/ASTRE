@@ -1,0 +1,27 @@
+MODULE main
+VAR state : {E1, E2, E3, E4, E5};
+    a : boolean;
+    b : boolean;
+    c : boolean;
+ASSIGN
+  init(state) := {E1, E2};
+  init(a) := FALSE;
+  init(b) := FALSE;
+  init(c) := FALSE;
+  next(state) := case
+        state = E1 : {E3, E4};
+        state = E2 : {E4};
+        state = E3 : {E4};
+        state = E4 : {E2, E3, E5};
+        state = E5 : {E4, E5};
+          esac;
+  next(a) := (next(state) = E1) | (next(state) = E5);
+  next(b) := (next(state) = E3) | (next(state) = E4) | (next(state) = E5);
+  next(c) := (next(state) = E3) | (next(state) = E2) | (next(state) = E5);
+
+LTLSPEC F G (c);
+LTLSPEC G F (c);
+LTLSPEC X !(c) -> X X (c);
+LTLSPEC G a;
+LTLSPEC a U (G (b | c));
+LTLSPEC (X X b ) U (b | c);
