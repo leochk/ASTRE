@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include "periods.h"
-#include "functions.h"
 
 void simulate_exec_time(unsigned int exec_time_ns);
 unsigned int get_time_ns();

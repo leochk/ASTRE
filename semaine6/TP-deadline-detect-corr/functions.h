@@ -2,9 +2,8 @@
 #define __FUNCTIONS_H_
 
 void pos_sensor_fct ();
-void speed_cmp_fct();
+void speed_cmd_fct();
 void obst_detect_fct();
 void traject_ctrl_fct();
-int rand_a_b(int a, int b);
 
 #endif
