@@ -1,0 +1,11 @@
+const double pcrash;
+const double ptransit1 = pcrash;
+const double ptransit2= 0.05;
+dtmc
+
+module myfunction
+x : [0..2] init 1;
+[] x=1 -> 1-pcrash-ptransit1: (x'=1) +pcrash: (x'=0)+ ptransit1:(x'=2);
+[] x=2 -> 1-ptransit2-pcrash :(x'=1)+ptransit2:(x'=2)+ pcrash:(x'=0);
+[] x=0 -> 1: (x'=0);
+endmodule
